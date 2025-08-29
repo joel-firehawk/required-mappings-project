@@ -1,5 +1,5 @@
 node_modules
 
-template.twig
-
 tracker(comments).js
+
+*.twig
