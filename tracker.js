@@ -1,6 +1,6 @@
 export function createTrackingProxy(path, tracker) {
   const proxy = new Proxy({}, {
-    get(_target, path) {
+    get(_target, prop) {
       if (typeof prop === "symbol") return undefined;
 
       const newPath = path ? `${path}.${prop}` : prop;
