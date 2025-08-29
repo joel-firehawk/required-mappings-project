@@ -1,25 +1,19 @@
-// index.js
+import fs from "fs";
 import pkg from "twig";
 import { trackTwigAccess } from "./tracker.js";
 
 const { twig } = pkg;
 
-// Example Twig template
-const template = `
-  {% set branch = client.branch %}
-  Client: {{ client.name }}
-  Branch: {{ branch.name }}
-  Stock item: {{ invoice.fStock.stock.name }}
-`;
+// Load template file from disk
+const templateString = fs.readFileSync("./template.twig", "utf-8");
 
-// Top-level entities
+// Compile the twig template once
+const twigTemplate = twig({ data: templateString });
+
+// Provide root keys that exist in your template
 const rootData = { client: {}, invoice: {}, event: {} };
 
-
-// Compile Twig template
-const twigTemplate = twig({ data: template });
-
-// Discover used variables (no fetching/mapping, just paths)
+// Run access discovery
 const usedPaths = trackTwigAccess(
   (vars) => twigTemplate.render(vars),
   rootData
