@@ -1,13 +1,11 @@
-// Responsible for discovering which variables are used in a Twig template
-
-function createTrackingProxy(path, tracker) {
+// tracker.js
+export function createTrackingProxy(path, tracker) {
   const proxy = new Proxy({}, {
     get(_target, prop) {
       if (typeof prop === "symbol") return undefined;
 
       const newPath = path ? `${path}.${prop}` : prop;
       tracker.add(newPath);
-
       return createTrackingProxy(newPath, tracker);
     },
     has: () => true,
@@ -22,24 +20,30 @@ function createTrackingProxy(path, tracker) {
   return proxy;
 }
 
-export function trackTwigAccess(renderFn, rootVars) {
+export function trackTwigAccess(renderFn, rootVars = {}) {
   const tracker = new Set();
 
-  const proxiedVars = {};
-  for (const key in rootVars) {
-    proxiedVars[key] = createTrackingProxy(key, tracker);
-  }
+  // Auto-proxy unknown roots
+  const proxiedVars = new Proxy({ ...rootVars }, {
+    get(target, prop) {
+      if (typeof prop === "symbol") return undefined;
+      if (!(prop in target)) {
+        target[prop] = createTrackingProxy(prop, tracker);
+      }
+      return target[prop];
+    }
+  });
 
   const originalError = console.error;
-  console.error = () => {}; // silence twig parse logs
+  console.error = () => {}; // temporarily silence Twig coercion errors
 
   try {
     renderFn(proxiedVars);
   } catch {
-    // ignore discovery errors entirely
+    // Ignore during discovery phase
   }
 
-  console.error = originalError;
+  console.error = originalError; // restore logging
 
   return [...tracker].filter(
     p => !p.endsWith(".then") &&
