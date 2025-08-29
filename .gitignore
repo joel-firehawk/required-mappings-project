@@ -3,3 +3,5 @@ node_modules
 tracker(comments).js
 
 *.twig
+
+testClient.json

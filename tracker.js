@@ -1,5 +1,29 @@
+function wrapIfObject(value, path, tracker) {
+  if (value !== null && typeof value === "object") {
+    return new Proxy(value, {
+      get(target, prop) {
+        if (typeof prop === "symbol") return target[prop];
+
+        const newPath = path ? `${path}.${prop}` : prop;
+        tracker.add(newPath);
+
+        const subValue = target[prop];
+        return wrapIfObject(subValue, newPath, tracker);
+      },
+      has: () => true,
+      ownKeys: () => Reflect.ownKeys(value),
+      getOwnPropertyDescriptor: () => ({
+        enumerable: true,
+        configurable: true
+      })
+    });
+  }
+  return value;
+}
+
+
 export function createTrackingProxy(path, tracker) {
-  const proxy = new Proxy({}, {
+  return new Proxy({}, {
     get(_target, prop) {
       if (typeof prop === "symbol") return undefined;
 
@@ -10,43 +34,42 @@ export function createTrackingProxy(path, tracker) {
     has: () => true,
     ownKeys: () => []
   });
-
-  proxy[Symbol.toPrimitive] = () => "";
-  proxy.toString = () => "";
-  proxy.valueOf = () => "";
-  proxy.toJSON = () => "";
-
-  return proxy;
 }
+
 
 export function trackTwigAccess(renderFn, rootVars = {}) {
   const tracker = new Set();
 
-  // Auto-proxy unknown roots
-  const proxiedVars = new Proxy({ ...rootVars }, {
+  // Wrap existing rootVars with tracking
+  const proxiedVars = new Proxy(rootVars, {
     get(target, prop) {
-      if (typeof prop === "symbol") return undefined;
+      if (typeof prop === "symbol") return target[prop];
+
       if (!(prop in target)) {
         target[prop] = createTrackingProxy(prop, tracker);
       }
-      return target[prop];
+
+      const value = target[prop];
+      return wrapIfObject(value, prop, tracker);
     }
   });
 
   const originalError = console.error;
-  console.error = () => {}; // temporarily silence Twig coercion errors
+  console.error = () => {}; // silence Twig coercion errors
 
   try {
     renderFn(proxiedVars);
   } catch {
-    // Ignore during discovery phase
+    // ignore errors during discovery
   }
 
-  console.error = originalError; // restore logging
+  console.error = originalError;
 
   return [...tracker].filter(
-    p => !p.endsWith(".then") &&
-         !p.endsWith(".toString") &&
-         !p.endsWith(".valueOf")
+    p =>
+      !p.endsWith(".then") &&
+      !p.endsWith(".toString") &&
+      !p.endsWith(".valueOf") &&
+      !p.includes("._keys")
   );
 }
