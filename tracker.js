@@ -74,6 +74,10 @@ export function trackTwigAccess(renderFn, rootVars = {}) {
       !p.endsWith("forEach") &&
       !p.endsWith("includes") &&
       !p.endsWith("indexOf") &&
+      !p.endsWith(".0") &&
+      !p.endsWith(".1") &&
+      !p.endsWith(".id") &&
+      !p.endsWith("tags") &&
       !p.includes("._keys")
   );
 }
