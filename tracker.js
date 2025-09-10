@@ -67,6 +67,10 @@ export function trackTwigAccess(renderFn, rootVars = {}) {
 
   return [...tracker].filter(
     p =>
+      !p.startsWith("financialDocument") &&
+      !p.startsWith("fDocument") &&
+      !p.startsWith("allFinancialDocuments") &&
+      !p.startsWith("fStock") &&
       !p.endsWith(".then") &&
       !p.endsWith(".toString") &&
       !p.endsWith(".valueOf") &&
@@ -78,6 +82,7 @@ export function trackTwigAccess(renderFn, rootVars = {}) {
       !p.endsWith(".1") &&
       !p.endsWith(".id") &&
       !p.endsWith("tags") &&
+      !p.endsWith("type") &&
       !p.includes("._keys")
   );
 }
