@@ -71,18 +71,19 @@ export function trackTwigAccess(renderFn, rootVars = {}) {
       !p.startsWith("fDocument") &&
       !p.startsWith("allFinancialDocuments") &&
       !p.startsWith("fStock") &&
+      !p.endsWith(".var") &&
       !p.endsWith(".then") &&
       !p.endsWith(".toString") &&
       !p.endsWith(".valueOf") &&
-      !p.endsWith("length") &&
-      !p.endsWith("forEach") &&
-      !p.endsWith("includes") &&
-      !p.endsWith("indexOf") &&
+      !p.endsWith(".length") &&
+      !p.endsWith(".forEach") &&
+      !p.endsWith(".includes") &&
+      !p.endsWith(".indexOf") &&
       !p.endsWith(".0") &&
       !p.endsWith(".1") &&
       !p.endsWith(".id") &&
-      !p.endsWith("tags") &&
-      !p.endsWith("type") &&
+      !p.endsWith(".tags") &&
+      !p.endsWith(".type") &&
       !p.includes("._keys")
   );
 }
