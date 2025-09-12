@@ -67,10 +67,13 @@ export function trackTwigAccess(renderFn, rootVars = {}) {
 
   return [...tracker].filter(
     p =>
+      // starts with filters
       !p.startsWith("financialDocument") &&
       !p.startsWith("fDocument") &&
       !p.startsWith("allFinancialDocuments") &&
       !p.startsWith("fStock") &&
+
+      // ends with filters - generic
       !p.endsWith(".var") &&
       !p.endsWith(".then") &&
       !p.endsWith(".toString") &&
@@ -79,11 +82,14 @@ export function trackTwigAccess(renderFn, rootVars = {}) {
       !p.endsWith(".forEach") &&
       !p.endsWith(".includes") &&
       !p.endsWith(".indexOf") &&
+
+      // unneccessary fields
       !p.endsWith(".0") &&
       !p.endsWith(".1") &&
       !p.endsWith(".id") &&
       !p.endsWith(".tags") &&
       !p.endsWith(".type") &&
+      !p.endsWith(".eventType") &&
       !p.includes("._keys")
   );
 }
