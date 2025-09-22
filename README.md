@@ -9,6 +9,7 @@ This project is not finished. There are still cases where it doesn't work.
 ## Cases where it doesn't work
 
 - Embedded JavaScript inside of Twig strings (lodashTemplate).
+  
 - Custom Twig functions/filters.
 
 ## Features
