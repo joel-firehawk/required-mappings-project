@@ -2,10 +2,11 @@
 
 This project allows you to analyze Twig templates and detect which variables are accessed during rendering.
 It uses JavaScript Proxies to intercept property access on variables, so you can see exactly what parts of the context are being used.
+Note: this project is not finished.
 
 ## Features
 
-- Track all variables used in a Twig template
+- Track variables used in a Twig template
 
 - Handles deeply nested properties (e.g. user.address.city)
 
@@ -46,7 +47,9 @@ You have {{ orders.0.total }} pending orders.
 
 ## Usage
 ### Run Tracker
+```
 node server.js
+```
 
 ### Example Output
 
