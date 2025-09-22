@@ -1,0 +1,72 @@
+{%- set children = [] -%}
+{%- set friends = [] -%}
+{%- set pets = [] -%}
+
+{%- if client.children is not empty -%}
+    {% for child in client.children %}
+        {%- set children = children|merge(child) -%}
+
+        {%- if child.friends is not empty -%}
+                {%- for friend in child.friends -%}
+                    {%- set friends = friends|merge(friend) -%}
+                        
+                    {%- if friend.pets is not empty -%}
+                        {%- for pet in friend.pets -%}
+                            {%- set pets = pets|merge(pet) -%}
+
+                        {%- endfor -%}
+                    {%- endif -%}
+
+                {%- endfor -%}
+            {%- endif -%}
+
+    {% endfor %}
+{%- endif -%}
+
+{% if i.name %}
+    {% if n.sameAsBefore %}
+        {{ y.y }}
+    {% endif %}
+{% endif %}
+
+{{ client.branch.name }}
+{{ client.name }}
+{{ client.funeralConductor.name }}
+{{ a.b.c.d.e }}
+
+{% set testing123 = client %}
+{{ testing123.category.name }}
+
+{% if client.uberName is not empty %}
+{{ client.uberName.isGotThisHas }}
+{% endif %}
+
+{% if client.uberName1 is empty %}
+    {{ client.uberName1.isGotThisHas1 }}
+{% endif %}
+
+{%- if children is not empty -%}
+    {% for child in children %}
+        {%- if child.lastname is not empty -%}
+            {{ child.lastName }}
+
+            {%- if friends is not empty -%}
+                {%- for friend in friends -%}
+                    {%- if friend.name is not empty -%}
+                        {{- friend.name -}}
+                        
+                        {%- if pets is not empty -%}
+                            {%- for pet in pets -%}
+                                {%- if pet.name is not empty -%}
+                                    {{- pet.name -}}
+                                {%- endif -%}
+
+                            {%- endfor -%}
+                            
+                        {%- endif -%}
+                    {%- endif -%}
+                {%- endfor -%}
+            {%- endif -%}
+        {%- endif -%}
+    {% endfor %}
+{%- endif -%}
