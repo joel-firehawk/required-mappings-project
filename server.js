@@ -8,24 +8,29 @@ const { twig } = pkg;
 let templateString = fs.readFileSync("./templates/template.twig", "utf-8");
 
 // Adjust template to make it readable 
+// adding "| default([])"
 templateString = templateString.replace(
     /{%-*\s*set\s+(\w+)\s*=\s*\[\]\s*-*%}/g,
     '{%- set $1 = [] | default([]) -%}'
 );
+// replacing standard for loop with set
 templateString = templateString.replace(
     /{%-?\s*for\s+(\w+)\s+in\s+([\w.]+)\s*-?%}/g, 
     '{%- set $1 = $2.0|default({}) -%}'
 );
 templateString = templateString.replace(
+    /{%-?\s*endfor\s*-?%}/g, ''
+);
+//
+templateString = templateString.replace(
     /{%-*\s*set\s+\w+\s=\s+\w+\|merge\((\w+)\)\s*-*%}/g, 
     "{%- set _ = $1.var|default('') -%}"
 );
+// Removing "if [var] is not empty" statements
 templateString = templateString.replace(
     / is(?: not)? empty(?= )/g, ''
 );
-templateString = templateString.replace(
-    /{%-?\s*endfor\s*-?%}/g, ''
-);
+// removed if statements checking "hasTag"
 templateString = templateString.replace(
     /{%-*\s*if\s+hasTag\s+==\s+true\s*-*%}/g, 
     '{%- if true -%}'
