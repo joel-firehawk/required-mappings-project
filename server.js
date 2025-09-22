@@ -8,14 +8,14 @@ const { twig } = pkg;
 let templateString = fs.readFileSync("./templates/template.twig", "utf-8");
 
 // Adjust template to make it readable 
-// adding "| default([])"
+// creating a default object so it isn't empty when proxy tries to access it
 templateString = templateString.replace(
     /{%-*\s*set\s+(\w+)\s*=\s*\[\]\s*-*%}/g,
     '{%- set $1 = [] | default([]) -%}'
 );
 // replacing standard for loop with set
 templateString = templateString.replace(
-    /{%-?\s*for\s+(\w+)\s+in\s+([\w.]+)\s*-?%}/g, 
+    /{%-*\s*for\s(\w+)\sin\s([\w\.]+).*-*%}/g, 
     '{%- set $1 = $2.0|default({}) -%}'
 );
 templateString = templateString.replace(
