@@ -6,6 +6,11 @@ It uses JavaScript Proxies to intercept property access on variables, so you can
 ### Note: 
 This project is not finished.
 
+## Cases where it doesn't work
+
+- Embedded JavaScript inside of Twig strings (lodashTemplate).
+- Custom Twig functions/filters.
+
 ## Features
 
 - Track variables used in a Twig template
