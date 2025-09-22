@@ -26,14 +26,25 @@ templateString = templateString.replace(
     /{%-*\s*set\s+\w+\s=\s+\w+\|merge\((\w+)\)\s*-*%}/g, 
     "{%- set _ = $1.var|default('') -%}"
 );
-// Removing "if [var] is not empty" statements
+// forcing if statements to be true if not checking objects
 templateString = templateString.replace(
-    / is(?: not)? empty(?= )/g, ''
-);
-// removed if statements checking "hasTag"
-templateString = templateString.replace(
-    /{%-*\s*if\s+hasTag\s+==\s+true\s*-*%}/g, 
+    /{%-*\s*if\s[\w]+\s[\w\s.<>?!=()]+-*%}/g, 
     '{%- if true -%}'
+);
+// forcing elseif statements to be true if not checking objects
+templateString = templateString.replace(
+    /{%-*\s*elseif\s[\w]+\s[\w\s.<>?!=()]+-*%}/g, 
+    '{%- elseif true -%}'
+);
+// removing conditions from if statements
+templateString = templateString.replace(
+    /{%-*\s*if\s([\w\.]+)\s[\w\s.<>?!=()]+-*%}/g, 
+    '{%- if $1 -%}'
+);
+// removing conditions from elseif statements
+templateString = templateString.replace(
+    /{%-*\s*elseif\s([\w\.]+)\s[\w\s.<>?!=()]+-*%}/g, 
+    '{%- elseif $1 -%}'
 );
 
 // Log updated template
