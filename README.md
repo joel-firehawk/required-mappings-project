@@ -27,11 +27,14 @@ Accessed paths are stored in a Set and returned.
 
 ### Example
 
+```
 Hello {{ user.name }}!
 You have {{ orders.0.total }} pending orders.
+```
 
 ### Would produce:
 
+```
 [
   "user",
   "user.name",
@@ -39,13 +42,17 @@ You have {{ orders.0.total }} pending orders.
   "orders.0",
   "orders.0.total"
 ]
+```
 
 ## Usage
 ### Run Tracker
 node server.js
 
 ### Example Output
+
+```
 Variables used in template: [
   'user.name',
   'orders.0.total'
 ]
+```
