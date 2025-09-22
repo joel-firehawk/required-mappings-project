@@ -2,7 +2,9 @@
 
 This project allows you to analyze Twig templates and detect which variables are accessed during rendering.
 It uses JavaScript Proxies to intercept property access on variables, so you can see exactly what parts of the context are being used.
-Note: this project is not finished.
+
+### Note: 
+This project is not finished.
 
 ## Features
 
